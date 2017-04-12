@@ -65,7 +65,7 @@ class EditorGUI(QMainWindow): # extends mainwindow
             if result:
                 filename = result[0]
                 # todo: allow non-txt extensions
-                if(not filename.endswith(".txt")):
+                if(not len(filename.split("."))==2):
                     filename = filename+".txt"
 
                 currentFile = filename
