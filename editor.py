@@ -6,10 +6,19 @@ from PyQt5.QtWidgets import *
 
 currentFile = None # current filename
 
+
+"""  Custom class that is essentially an improved QTextEdit """
+class InsaniTextEdit(QTextEdit):
+    def __init__(self):
+        super().__init__()
+
+# todo: override keypress events
+
 """ GUI class for the editor"""
 class EditorGUI(QMainWindow): # extends mainwindow
 
     textArea = None
+
     def __init__(self):
         super().__init__()
         self.setupGUI()
@@ -21,8 +30,12 @@ class EditorGUI(QMainWindow): # extends mainwindow
         self.move(500,300)
         self.setWindowTitle('InsaniText')
 
+        #set icon
+        self.setWindowIcon(QIcon("/resources/icons/icon.ico"))
+
         # text area
-        self.textArea = QTextEdit()
+        self.textArea = InsaniTextEdit()
+        self.textArea.setTabStopWidth(20) # tab size (in pixels) is purely graphical. It does not convert to X spaces
         self.setCentralWidget(self.textArea)
 
 
@@ -73,11 +86,15 @@ class EditorGUI(QMainWindow): # extends mainwindow
             self.textArea.setText(fileContent)
 
 
+    def wordCount(self,event):
+        text = self.textArea.toPlainText()
+        print(text)
+
+
 
 
 
 if __name__ == '__main__':
-	print("tab to spaces")
     app = QApplication(sys.argv)
     gui = EditorGUI()
     sys.exit(app.exec_())
