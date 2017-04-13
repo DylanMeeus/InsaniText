@@ -1,4 +1,5 @@
 import sys
+import re
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -24,7 +25,10 @@ class EditorModel():
 
 
     def countWords(self):
-        return len(self.textContent.split(" "))
+        words = re.split("[' '|'\\n']",self.textContent)
+        # filter out empty blocks that somehow happen
+        words = list(filter(lambda k: k != '',words))
+        return len(words)
 
 """ controller for the editor """
 class EditorController():
