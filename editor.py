@@ -55,6 +55,9 @@ class EditorGUI(QMainWindow): # extends mainwindow
         self.textArea.shortcut = QShortcut(QKeySequence("CTRL+O"),self)
         self.textArea.shortcut.activated.connect(self.open)
 
+        self.textArea.shortcut = QShortcut(QKeySequence("CTRL+SHIFT+S"),self)
+        self.textArea.shortcut.activated.connect(self.saveAs)
+
     """ save content from the text editor into a file"""
     def save(self):
         global currentFile
@@ -73,6 +76,16 @@ class EditorGUI(QMainWindow): # extends mainwindow
 
         file = open(currentFile,'w')
         file.write(textInEditor)
+
+    def saveAs(self):
+        global currentFile
+        # prompt the user for saving the file
+        result = QFileDialog.getSaveFileName()
+        if result:
+            filename = result[0]
+            currentFile = filename
+            file = open(currentFile,'w')
+            file.write(self.textArea.toPlainText())
 
     """ read a file into the text editor"""
     def open(self):
