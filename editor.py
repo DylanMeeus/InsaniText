@@ -57,15 +57,21 @@ class EditorGUI(QMainWindow): # extends mainwindow
     textArea = None
     controller = EditorController()
     
-    def __init__(self):
+    def __init__(self, resolution):
         super().__init__()
         self.setupGUI()
         self.setupShortcuts()
 
     def setupGUI(self):
         # set size
-        self.resize(800,800)
-        self.move(500,300)
+        xSize = 600
+        ySize = 600
+        self.resize(xSize,ySize)
+        width = resolution[0]
+        height = resolution[1]
+        xPos = (width/2)  - (xSize/2)
+        yPos = height/2 - (ySize/2)
+        self.move(xPos,yPos)
         self.setWindowTitle('InsaniText')
 
         #set icon
@@ -141,5 +147,9 @@ class EditorGUI(QMainWindow): # extends mainwindow
 if __name__ == '__main__':
     print("started editor")
     app = QApplication(sys.argv)
-    gui = EditorGUI()
+
+    # determine screen size for GUI
+    screen_rect = app.desktop().screenGeometry()
+    resolution = (screen_rect.width(),screen_rect.height())
+    gui = EditorGUI(resolution)
     sys.exit(app.exec_())
