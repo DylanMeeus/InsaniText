@@ -7,18 +7,52 @@ from PyQt5.QtWidgets import *
 currentFile = None # current filename
 
 
+""" class that represents the data/state of the editor """
+class EditorModel():
+    def __init__(self):
+        self.wordCount = 0
+        self.textContent = ""
+
+    def setText(self,text):
+        self.textContent = text
+        self.updateState()
+        print(self.wordCount)
+
+    # When the text changes, we might need to update multiple variables.
+    def updateState(self):
+        self.wordCount = self.countWords()
+
+
+    def countWords(self):
+        return len(self.textContent.split(" "))
+
+""" controller for the editor """
+class EditorController():
+    def __init__(self):
+        self.editorModel = EditorModel()
+
+    def setTextContent(self,textContent):
+        self.editorModel.setText(textContent)
+        
 """  Custom class that is essentially an improved QTextEdit """
 class InsaniTextEdit(QTextEdit):
-    def __init__(self):
+    
+    def __init__(self, controller):
         super().__init__()
+        self.controller = controller
+
+    def keyPressEvent(self,e):
+        super().keyPressEvent(e)
+        self.controller.setTextContent(self.toPlainText())
 
 # todo: override keypress events
 
-""" GUI class for the editor"""
+""" GUI class for the editor """
 class EditorGUI(QMainWindow): # extends mainwindow
 
     textArea = None
-
+    controller = EditorController()
+    
     def __init__(self):
         super().__init__()
         self.setupGUI()
@@ -34,7 +68,7 @@ class EditorGUI(QMainWindow): # extends mainwindow
         self.setWindowIcon(QIcon("/resources/icons/icon.ico"))
 
         # text area
-        self.textArea = InsaniTextEdit()
+        self.textArea = InsaniTextEdit(self.controller)
         self.textArea.setTabStopWidth(20) # tab size (in pixels) is purely graphical. It does not convert to X spaces
         self.setCentralWidget(self.textArea)
 
@@ -42,9 +76,7 @@ class EditorGUI(QMainWindow): # extends mainwindow
         menubar = self.menuBar()
         fileMenu = menubar.addMenu("File")
 
-
-
-    # show the GUI
+        # show the GUI
         self.show()
 
     """ method to define shortcuts on the editor"""
@@ -99,15 +131,11 @@ class EditorGUI(QMainWindow): # extends mainwindow
             self.textArea.setText(fileContent)
 
 
-    def wordCount(self,event):
-        text = self.textArea.toPlainText()
-        print(text)
-
-
 
 
 
 if __name__ == '__main__':
+    print("started editor")
     app = QApplication(sys.argv)
     gui = EditorGUI()
     sys.exit(app.exec_())
