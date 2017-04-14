@@ -44,6 +44,8 @@ class InsaniTextEdit(QTextEdit):
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
+        # Set solarized-light background
+        self.setStyleSheet("background-color:#fdf6e3")
 
     def keyPressEvent(self,e):
         super().keyPressEvent(e)
@@ -61,6 +63,7 @@ class EditorGUI(QMainWindow): # extends mainwindow
         super().__init__()
         self.setupGUI()
         self.setupShortcuts()
+    
 
     def setupGUI(self):
         # set size
