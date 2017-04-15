@@ -66,6 +66,8 @@ class EditorGUI(QMainWindow): # extends mainwindow
     
 
     def setupGUI(self):
+        # create the menubar
+        self.setupMenubar()
         # set size
         xSize = 600
         ySize = 600
@@ -86,11 +88,13 @@ class EditorGUI(QMainWindow): # extends mainwindow
         self.setCentralWidget(self.textArea)
 
 
-        menubar = self.menuBar()
-        fileMenu = menubar.addMenu("File")
-
         # show the GUI
         self.show()
+
+    def setupMenubar(self):
+        menubar = self.menuBar()
+        menubar.addMenu("File")
+        menubar.addMenu("Preferences")
 
     """ method to define shortcuts on the editor"""
     def setupShortcuts(self):
