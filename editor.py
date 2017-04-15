@@ -1,5 +1,6 @@
 import sys
 import re
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -8,16 +9,37 @@ from PyQt5.QtWidgets import *
 currentFile = None # current filename
 
 
-""" class that represents the data/state of the editor """
-class EditorModel():
+
+## Observable and observer classes (there are no interfaces in python apperantly)
+
+class EditorObservable():
     def __init__(self):
+        self.observers = []
+
+    def addObserver(self,observer):
+        self.observers.append(observer)
+
+    def notify(self):
+        for observer in self.observers:
+            observer.update()
+
+class EditorObserver():
+    def update(self):
+        pass
+
+
+
+""" class that represents the data/state of the editor """
+class EditorModel(EditorObservable):
+    def __init__(self):
+        super().__init__()
         self.wordCount = 0
         self.textContent = ""
 
     def setText(self,text):
         self.textContent = text
         self.updateState()
-        print(self.wordCount)
+        super().notify()
 
     # When the text changes, we might need to update multiple variables.
     def updateState(self):
@@ -37,6 +59,26 @@ class EditorController():
 
     def setTextContent(self,textContent):
         self.editorModel.setText(textContent)
+
+    def subscribe(self,object):
+        self.editorModel.addObserver(object)
+
+    def getWordCount(self):
+        return self.editorModel.countWords()
+
+
+class InsaniStatusbar(QStatusBar, EditorObserver):
+    def __init__(self, controller):
+        super().__init__()
+        self.controller = controller
+        controller.subscribe(self)
+        self.testLabel = QLabel("words: 0")
+        self.addWidget(self.testLabel)
+
+    def update(self):
+
+        self.testLabel.setText("words: " + str(self.controller.getWordCount()))
+
         
 """  Custom class that is essentially an improved QTextEdit """
 class InsaniTextEdit(QTextEdit):
@@ -54,13 +96,17 @@ class InsaniTextEdit(QTextEdit):
 # todo: override keypress events
 
 """ GUI class for the editor """
-class EditorGUI(QMainWindow): # extends mainwindow
+class EditorGUI(QMainWindow, EditorObserver): # extends mainwindow
 
     textArea = None
     controller = EditorController()
     
     def __init__(self, resolution):
         super().__init__()
+
+        # subscribe to the model
+        self.controller.subscribe(self)
+
         self.setupGUI()
         self.setupShortcuts()
     
@@ -68,6 +114,7 @@ class EditorGUI(QMainWindow): # extends mainwindow
     def setupGUI(self):
         # create the menubar
         self.setupMenubar()
+
         # set size
         xSize = 600
         ySize = 600
@@ -87,6 +134,9 @@ class EditorGUI(QMainWindow): # extends mainwindow
         self.textArea.setTabStopWidth(20) # tab size (in pixels) is purely graphical. It does not convert to X spaces
         self.setCentralWidget(self.textArea)
 
+
+        # create status bar
+        self.setStatusBar(InsaniStatusbar(self.controller))
 
         # show the GUI
         self.show()
@@ -147,6 +197,10 @@ class EditorGUI(QMainWindow): # extends mainwindow
             fileContent = (file.read())
             self.textArea.setText(fileContent)
 
+
+
+    def update(self):
+        pass
 
 
 
