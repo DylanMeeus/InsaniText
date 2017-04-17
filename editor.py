@@ -35,6 +35,7 @@ class EditorModel(EditorObservable):
         super().__init__()
         self.wordCount = 0
         self.textContent = ""
+        self.characterCount = 0
 
     def setText(self,text):
         self.textContent = text
@@ -44,6 +45,7 @@ class EditorModel(EditorObservable):
     # When the text changes, we might need to update multiple variables.
     def updateState(self):
         self.wordCount = self.countWords()
+        self.characterCount = len(self.textContent)
 
 
     def countWords(self):
@@ -68,18 +70,23 @@ class EditorController():
     def getWordCount(self):
         return self.editorModel.countWords()
 
+    def getCharCount(self):
+        return self.editorModel.characterCount
+
 
 class InsaniStatusbar(QStatusBar, EditorObserver):
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
         controller.subscribe(self)
-        self.testLabel = QLabel("words: 0")
-        self.addWidget(self.testLabel)
+        self.wordLabel = QLabel("words: 0")
+        self.addWidget(self.wordLabel)
+        self.charcountLabel = QLabel("characters: 0")
+        self.addWidget(self.charcountLabel)
 
     def update(self):
-
-        self.testLabel.setText("words: " + str(self.controller.getWordCount()))
+        self.wordLabel.setText("words: " + str(self.controller.getWordCount()))
+        self.charcountLabel.setText("characters: " + str(self.controller.getCharCount()))
 
         
 """  Custom class that is essentially an improved QTextEdit """
