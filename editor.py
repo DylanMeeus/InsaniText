@@ -53,7 +53,7 @@ class EditorModel(EditorObservable):
         # filter out empty blocks that somehow happen
         words = list(filter(lambda k: k != '',words))
 	  #filter out non-words
-        words = list(filter(lambda k : re.search("^[aA-zZ]+.$",k) != None, words))
+        words = list(filter(lambda k : re.search("^[aA-zZ]+.?$",k) != None, words))
         return len(words)
 
 """ controller for the editor """
