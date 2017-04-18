@@ -29,8 +29,9 @@ class EditorObserver():
 
 
 
-""" class that represents the data/state of the editor """
+
 class EditorModel(EditorObservable):
+    """ class that represents the data/state of the editor """
     def __init__(self):
         super().__init__()
         self.wordCount = 0
@@ -56,8 +57,9 @@ class EditorModel(EditorObservable):
         words = list(filter(lambda k : re.search("^[aA-zZ]+.?$",k) != None, words))
         return len(words)
 
-""" controller for the editor """
+
 class EditorController():
+    """ controller for the editor """
     def __init__(self):
         self.editorModel = EditorModel()
 
@@ -89,9 +91,9 @@ class InsaniStatusbar(QStatusBar, EditorObserver):
         self.charcountLabel.setText("characters: " + str(self.controller.getCharCount()))
 
         
-"""  Custom class that is essentially an improved QTextEdit """
+
 class InsaniTextEdit(QTextEdit):
-    
+    """  Custom class that is essentially an improved QTextEdit """
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
@@ -104,9 +106,9 @@ class InsaniTextEdit(QTextEdit):
 
 # todo: override keypress events
 
-""" GUI class for the editor """
-class EditorGUI(QMainWindow, EditorObserver): # extends mainwindow
 
+class EditorGUI(QMainWindow, EditorObserver): # extends mainwindow
+    """ GUI class for the editor """
     textArea = None
     controller = EditorController()
     
@@ -155,8 +157,9 @@ class EditorGUI(QMainWindow, EditorObserver): # extends mainwindow
         menubar.addMenu("File")
         menubar.addMenu("Preferences")
 
-    """ method to define shortcuts on the editor"""
+
     def setupShortcuts(self):
+        """ method to define shortcuts on the editor"""
         self.textArea.shortcut = QShortcut(QKeySequence("CTRL+S"),self)
         self.textArea.shortcut.activated.connect(self.save)
 
@@ -166,8 +169,9 @@ class EditorGUI(QMainWindow, EditorObserver): # extends mainwindow
         self.textArea.shortcut = QShortcut(QKeySequence("CTRL+SHIFT+S"),self)
         self.textArea.shortcut.activated.connect(self.saveAs)
 
-    """ save content from the text editor into a file"""
+
     def save(self):
+        """ save content from the text editor into a file"""
         global currentFile
         textInEditor = (self.textArea.toPlainText())
 
@@ -195,8 +199,9 @@ class EditorGUI(QMainWindow, EditorObserver): # extends mainwindow
             file = open(currentFile,'w')
             file.write(self.textArea.toPlainText())
 
-    """ read a file into the text editor"""
+
     def open(self):
+        """ read a file into the text editor"""
         global currentFile
         result = QFileDialog.getOpenFileName()
 
@@ -205,7 +210,6 @@ class EditorGUI(QMainWindow, EditorObserver): # extends mainwindow
             file = open(currentFile,'r')
             fileContent = (file.read())
             self.textArea.setText(fileContent)
-
 
 
     def update(self):
