@@ -35,15 +35,22 @@ class InsaniTextEdit(QTextEdit):
         self.setStyleSheet("background-color:#fdf6e3")
 
     def keyPressEvent(self,e):
-        super().keyPressEvent(e)
+        # convert tabs to space!
+        if (e.text() == "\t"):
+            event = QKeyEvent(QEvent.KeyPress, Qt.Key_Space, Qt.NoModifier," ")
+            for i in range(4):
+                super().keyPressEvent(event)
+        else:
+            super().keyPressEvent(e)
+
         # measure time since last press
         delta = self.lastpress - datetime.now() if self.lastpress != None else 0
         self.lastpress = datetime.now()
-        print(delta)
+        #print(delta)
         self.controller.setTextContent(self.toPlainText())
 
 
-class EditorGUI(QMainWindow, editorobservers.EditorObserver): # extends mainwindow
+class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwindow
     """ GUI class for the editor """
     textArea = None
     controller = controllers.EditorController()
