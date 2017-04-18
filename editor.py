@@ -70,7 +70,7 @@ class EditorController():
         self.editorModel.addObserver(object)
 
     def getWordCount(self):
-        return self.editorModel.countWords()
+        return self.editorModel.wordCount
 
     def getCharCount(self):
         return self.editorModel.characterCount
