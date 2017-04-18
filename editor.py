@@ -1,6 +1,8 @@
 import sys
 import re
 
+from datetime import datetime
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -96,12 +98,18 @@ class InsaniTextEdit(QTextEdit):
     """  Custom class that is essentially an improved QTextEdit """
     def __init__(self, controller):
         super().__init__()
+        self.lastpress = None
         self.controller = controller
         # Set solarized-light background
         self.setStyleSheet("background-color:#fdf6e3")
 
     def keyPressEvent(self,e):
         super().keyPressEvent(e)
+        # measure time since last press
+        delta = self.lastpress - datetime.now() if self.lastpress != None else 0
+        self.lastpress = datetime.now()
+        print(delta)
+
         self.controller.setTextContent(self.toPlainText())
 
 # todo: override keypress events
