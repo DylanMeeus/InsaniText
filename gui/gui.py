@@ -78,10 +78,11 @@ class InsaniTextEdit(QTextEdit):
 class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwindow
     """ GUI class for the editor """
     textArea = None
-    controller = controllers.EditorController()
+
 
     def __init__(self, resolution):
         super().__init__()
+        self.controller = controllers.EditorController()
 
         # subscribe to the model
         self.controller.subscribe(self)
@@ -180,6 +181,8 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
             fileContent = (file.read())
             self.textArea.setText(fileContent)
 
+    def loadText(self,text):
+        self.textArea.setText(text)
 
     def update(self):
         pass
