@@ -23,10 +23,11 @@ class EditorModel(editorobservers.EditorObservable):
         self.characterCount = len(self.textContent)
 
 
-    def dumpbuffer(charbuffer):
+    def dumpbuffer(self,charbuffer):
         """ analyze a buffer of characters to update the wpm and cpm values """
         self.cpm += len(charbuffer)
         self.wpm = self.cpm // 5 
+        super().notify()
 
     def countWords(self):
         words = re.split("[' '|'\\n']",self.textContent)

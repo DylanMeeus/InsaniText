@@ -17,11 +17,16 @@ class InsaniStatusbar(QStatusBar, editorobservers.EditorObserver):
         self.addWidget(self.wordLabel)
         self.charcountLabel = QLabel("characters: 0")
         self.addWidget(self.charcountLabel)
+        self.cpmLabel = QLabel("cpm: 0")
+        self.addWidget(self.cpmLabel)
+        self.wpmLabel = QLabel("wpm: 0")
+        self.addWidget(self.wpmLabel)
 
     def update(self):
         self.wordLabel.setText("words: " + str(self.controller.getWordCount()))
         self.charcountLabel.setText("characters: " + str(self.controller.getCharCount()))
-
+        self.cpmLabel.setText("cpm: " + str(self.controller.getCPM()))
+        self.wpmLabel.setText("wpm: " + str(self.controller.getWPM()))
 
 
 class InsaniTextEdit(QTextEdit):
@@ -52,9 +57,10 @@ class InsaniTextEdit(QTextEdit):
             self.charbuffer.append(e.text())
             if len(self.charbuffer) >= 200:
                 # clean the buffer and calculate the wpm. Could do this based on timestamps as well though
-                pass
+                self.controller.dumpcharbuffer(self.charbuffer)
         else:
             # start a new buffer, and dump the current one
+            self.controller.dumpcharbuffer(self.charbuffer)
             self.charbuffer = []
             self.charbuffer.append(e.text())
         print(self.charbuffer)
