@@ -1,4 +1,5 @@
 import re
+import time
 from models import editorobservers
 
 class EditorModel(editorobservers.EditorObservable):
@@ -8,6 +9,8 @@ class EditorModel(editorobservers.EditorObservable):
         self.wordCount = 0
         self.textContent = ""
         self.characterCount = 0
+        self.wpm = 0
+        self.cpm = 0
 
     def setText(self,text):
         self.textContent = text
@@ -19,6 +22,11 @@ class EditorModel(editorobservers.EditorObservable):
         self.wordCount = self.countWords()
         self.characterCount = len(self.textContent)
 
+
+    def dumpbuffer(charbuffer):
+        """ analyze a buffer of characters to update the wpm and cpm values """
+        self.cpm += len(charbuffer)
+        self.wpm = self.cpm // 5 
 
     def countWords(self):
         words = re.split("[' '|'\\n']",self.textContent)
