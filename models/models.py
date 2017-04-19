@@ -11,6 +11,7 @@ class EditorModel(editorobservers.EditorObservable):
         self.characterCount = 0
         self.wpm = 0
         self.cpm = 0
+        self.cpm_buffer = []
 
     def setText(self,text):
         self.textContent = text
@@ -23,10 +24,17 @@ class EditorModel(editorobservers.EditorObservable):
         self.characterCount = len(self.textContent)
 
 
-    def dumpbuffer(self,charbuffer):
+    def dumpbuffer(self,charbuffer,buffer_starttime, buffer_endtime):
         """ analyze a buffer of characters to update the wpm and cpm values """
-        self.cpm += len(charbuffer)
-        self.wpm = self.cpm // 5 
+
+        # filter for only the actual characters of the alphabet, and allow numbers too.
+        charbuffer = list(filter(lambda k : re.match('[aA-zZ|0-9|" "]',k) != None,charbuffer))
+        cpb = len(charbuffer)
+        buffer_delta = (buffer_endtime - buffer_starttime) / 1000 # time in seconds
+        cps = cpb / buffer_delta
+        self.cpm_buffer.append(cps*60)
+        self.cpm = sum(self.cpm_buffer) // len(self.cpm_buffer)
+        self.wpm = self.cpm // 5
         super().notify()
 
     def countWords(self):

@@ -31,11 +31,15 @@ class InsaniStatusbar(QStatusBar, editorobservers.EditorObserver):
 
 class InsaniTextEdit(QTextEdit):
     """  Custom class that is essentially an improved QTextEdit """
+
+    BUFFER_THRESHOLD = 20
     def __init__(self, controller):
         super().__init__()
         self.lastpress = None
         self.controller = controller
         self.charbuffer = [] # Buffer for the characters that are in the current "count-cycle" for the WPM average.
+        # some variables for timing how long we have been typing
+        self.startbuffer_time = 0
         # Set solarized-light background
         self.setStyleSheet("background-color:#fdf6e3")
 
@@ -52,18 +56,22 @@ class InsaniTextEdit(QTextEdit):
         now = int(round(time.time() * 1000))
         delta = now - self.lastpress if self.lastpress != None else 0
         self.lastpress = now
-        print(str(delta) + "ms")
         if(delta < 2000):
             self.charbuffer.append(e.text())
-            if len(self.charbuffer) >= 200:
+            if len(self.charbuffer) >= self.BUFFER_THRESHOLD:
                 # clean the buffer and calculate the wpm. Could do this based on timestamps as well though
-                self.controller.dumpcharbuffer(self.charbuffer)
+                self.controller.dumpcharbuffer(self.charbuffer,self.startbuffer_time,self.lastpress)
+                self.charbuffer = []
+                self.startbuffer_time = now # reset buffer time
+
+            # if we reached this and the timer is still 0, start the timer
+            if(self.startbuffer_time == 0):
+                self.startbuffer_time = now
         else:
             # start a new buffer, and dump the current one
-            self.controller.dumpcharbuffer(self.charbuffer)
             self.charbuffer = []
+            self.startbuffer_time = now
             self.charbuffer.append(e.text())
-        print(self.charbuffer)
         self.controller.setTextContent(self.toPlainText())
 
 
