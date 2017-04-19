@@ -1,5 +1,4 @@
-InsaniText
-========
+#InsaniText
 
 This is a text editor I am making for fun, and partly to get better at writing code in Python and Qt.
 
@@ -16,4 +15,14 @@ These features I do want to add to this editor at some point in time, in no part
 * Syntax highlighting 
 * Preferences menu (adjustable backgroud, font, etc..)
 * Menubar options (save, save as, open..)
-* Average typing-speed measurement.
+* Add InsaniText to the open-with options under windows
+
+## Typing measurement
+While you are typing in the editor, it will calculate an average WPM and CPM. This average is calculated based on the characters that you are typing, but it is only looking at [0-9] and [aA-zZ]. Spacebar presses are also included. 
+
+## Getting started
+In order to run this program, you will need to have Python 3 installed. I have tested this on a windows and a ubuntu installation of Python 3. This also means that if you are running this on a mac, it is not tested and I can not guarantee that everything is working as inteded due to difference in the operating systems. 
+
+Apart from python you will also need to have PyQt installed, which is used for the GUI of this project. To install PyQt, the easiest way is by using pip. `pip install PyQt5`
+
+After installing this, you can just run `python editor.py` to launch the editor.
