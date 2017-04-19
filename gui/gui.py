@@ -1,7 +1,6 @@
+import time
 from controllers import controllers
 from models import editorobservers
-
-from datetime import datetime
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -31,6 +30,7 @@ class InsaniTextEdit(QTextEdit):
         super().__init__()
         self.lastpress = None
         self.controller = controller
+        self.charbuffer = [] # Buffer for the characters that are in the current "count-cycle" for the WPM average.
         # Set solarized-light background
         self.setStyleSheet("background-color:#fdf6e3")
 
@@ -44,9 +44,20 @@ class InsaniTextEdit(QTextEdit):
             super().keyPressEvent(e)
 
         # measure time since last press
-        delta = self.lastpress - datetime.now() if self.lastpress != None else 0
-        self.lastpress = datetime.now()
-        #print(delta)
+        now = int(round(time.time() * 1000))
+        delta = now - self.lastpress if self.lastpress != None else 0
+        self.lastpress = now
+        print(str(delta) + "ms")
+        if(delta < 2000):
+            self.charbuffer.append(e.text())
+            if len(self.charbuffer) >= 200:
+                # clean the buffer and calculate the wpm. Could do this based on timestamps as well though
+                pass
+        else:
+            # start a new buffer, and dump the current one
+            self.charbuffer = []
+            self.charbuffer.append(e.text())
+        print(self.charbuffer)
         self.controller.setTextContent(self.toPlainText())
 
 
