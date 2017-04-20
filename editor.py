@@ -24,7 +24,6 @@ if __name__ == '__main__':
     fileContent = open(filename,'r').read() if filename != None else ""
 
     app = QApplication(sys.argv)
-
     # determine screen size for GUI
     screen_rect = app.desktop().screenGeometry()
     resolution = (screen_rect.width(),screen_rect.height())

@@ -1,3 +1,4 @@
+import os
 import time
 from controllers import controllers
 from models import editorobservers
@@ -7,6 +8,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 currentFile = None # current filename
+workingDir = None
 
 class InsaniStatusbar(QStatusBar, editorobservers.EditorObserver):
     def __init__(self, controller):
@@ -119,7 +121,14 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
         # create status bar
         self.setStatusBar(InsaniStatusbar(self.controller))
 
-        # show the GUI
+
+        # add sidebar
+        self.filetree = InsaniFileTree()
+        dock = QDockWidget()
+        dock.setWidget(self.filetree)
+        self.addDockWidget(Qt.LeftDockWidgetArea, dock)
+
+    # show the GUI
         self.show()
 
     def setupMenubar(self):
@@ -177,6 +186,10 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
 
         if result:
             currentFile = result[0]
+            parts = currentFile.split('/')
+            dirparts = parts[:len(parts)-1]
+            dir = '/'.join(dirparts)
+            self.filetree.setModelRoot(dir)
             file = open(currentFile,'r')
             fileContent = (file.read())
             self.textArea.setText(fileContent)
@@ -186,4 +199,35 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
 
     def update(self):
         pass
+
+
+
+
+class InsaniFileTree(QTreeView):
+    def __init__(self):
+        QTreeView.__init__(self)
+        self.setModelRoot('.')
+
+    def setModelRoot(self,rootdir):
+        model = QStandardItemModel()
+
+        rootItem = model.invisibleRootItem()
+        for dirName, dirs, files in os.walk(rootdir):
+            files = [f for f in files if not f[0] == '.']
+            dirs[:] = [d for d in dirs if not d[0] == '.'] # subdirs
+            print('Found directory: %s' % dirName)
+            dirItem = QStandardItem(dirName)
+            for fname in files:
+                item = QStandardItem(fname)
+                dirItem.appendRow(item)
+
+            for dir in dirs:
+                item = QStandardItem(dir)
+                dirItem.appendRow(item)
+
+            rootItem.appendRow(dirItem)
+        self.setModel(model)
+
+
+
 
