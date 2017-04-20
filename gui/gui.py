@@ -207,6 +207,7 @@ class InsaniFileTree(QTreeView):
     def __init__(self):
         QTreeView.__init__(self)
         self.setModelRoot('.')
+        self.setHeaderHidden(True)
 
     def setModelRoot(self,rootdir):
         model = QStandardItemModel()
@@ -215,14 +216,16 @@ class InsaniFileTree(QTreeView):
         for dirName, dirs, files in os.walk(rootdir):
             files = [f for f in files if not f[0] == '.']
             dirs[:] = [d for d in dirs if not d[0] == '.'] # subdirs
-            print('Found directory: %s' % dirName)
             dirItem = QStandardItem(dirName)
+            dirItem.setEditable(False)
             for fname in files:
                 item = QStandardItem(fname)
+                item.setEditable(False)
                 dirItem.appendRow(item)
 
             for dir in dirs:
                 item = QStandardItem(dir)
+                item.setEditable(False)
                 dirItem.appendRow(item)
 
             rootItem.appendRow(dirItem)
