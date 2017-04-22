@@ -149,32 +149,10 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
 
 
     def save(self):
-        """ save content from the text editor into a file"""
-        textInEditor = (self.textArea.toPlainText())
-
-        if self.controller.getActiveDocument() is None or self.controller.getActiveDocument() == "":
-            result = QFileDialog.getSaveFileName()
-            if result:
-                filename = result[0]
-                # todo: allow non-txt extensions
-                if(not len(filename.split("."))==2):
-                    filename = filename+".txt"
-
-                self.controller.setActiveDocument(filename)
-
-
-        file = open(self.controller.getActiveDocument(),'w')
-        file.write(textInEditor)
+        self.controller.saveActiveDocument()
 
     def saveAs(self):
-        # prompt the user for saving the file
-        result = QFileDialog.getSaveFileName()
-        if result:
-            filename = result[0]
-            currentFile = filename
-            self.controller.setActiveDocument(currentFile)
-            file = open(currentFile,'w')
-            file.write(self.textArea.toPlainText())
+        self.controller.saveActiveDocumentAs()
 
 
     def open(self):

@@ -2,6 +2,10 @@ import re
 import time
 from models import editorobservers
 
+
+from PyQt5.QtWidgets import * # import for file dialogs
+
+
 class EditorModel(editorobservers.EditorObservable):
     """ class that represents the data/state of the editor """
     def __init__(self):
@@ -60,4 +64,24 @@ class EditorModel(editorobservers.EditorObservable):
         #filter out non-words
         words = list(filter(lambda k : re.search("^[aA-zZ]+.?$",k) != None, words))
         return len(words)
+
+
+    def saveContentToFile(self, saveAs = False):
+        if (self.activeDocument is None or self.activeDocument == "") or saveAs == True:
+            result = QFileDialog.getSaveFileName()
+            if result:
+                filename = result[0]
+                # todo: allow non-txt extensions
+                if(not len(filename.split("."))==2):
+                    filename = filename+".txt"
+                self.activeDocument = filename
+
+
+        file = open(self.activeDocument,'w')
+        file.write(self.textContent)
+        file.close()
+
+
+    def saveAs(self):
+        self.saveContentToFile(True)
 

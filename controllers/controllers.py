@@ -31,3 +31,9 @@ class EditorController():
 
     def getActiveDocument(self):
         return self.editorModel.activeDocument
+
+    def saveActiveDocument(self):
+        self.editorModel.saveContentToFile()
+
+    def saveActiveDocumentAs(self):
+        self.editorModel.saveAs()
