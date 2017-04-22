@@ -12,17 +12,33 @@ class EditorModel(editorobservers.EditorObservable):
         self.wpm = 0
         self.cpm = 0
         self.cpm_buffer = []
+        self.activeDocument = None
+
+    def setDocument(self,document):
+        """ Set a new document as active document """
+        self.activeDocument = document
+        self.resetState()
 
     def setText(self,text):
         self.textContent = text
         self.updateState()
         super().notify()
 
-    # When the text changes, we might need to update multiple variables.
     def updateState(self):
+        # When the text changes, we might need to update multiple variables.
         self.wordCount = self.countWords()
         self.characterCount = len(self.textContent)
 
+
+    def resetState(self):
+        """ Reset the values of this model """
+        self.wordCount = 0
+        self.textContent = ""
+        self.characterCount = 0
+        self.wpm = 0
+        self.cpm = 0
+        self.cpm_buffer = []
+        super().notify()
 
     def dumpbuffer(self,charbuffer,buffer_starttime, buffer_endtime):
         """ analyze a buffer of characters to update the wpm and cpm values """

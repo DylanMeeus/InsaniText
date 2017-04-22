@@ -7,7 +7,6 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-currentFile = None # current filename
 workingDir = None
 
 class InsaniStatusbar(QStatusBar, editorobservers.EditorObserver):
@@ -151,10 +150,9 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
 
     def save(self):
         """ save content from the text editor into a file"""
-        global currentFile
         textInEditor = (self.textArea.toPlainText())
 
-        if currentFile is None or currentFile == "":
+        if self.controller.getActiveDocument() is None or self.controller.getActiveDocument() == "":
             result = QFileDialog.getSaveFileName()
             if result:
                 filename = result[0]
@@ -162,30 +160,30 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
                 if(not len(filename.split("."))==2):
                     filename = filename+".txt"
 
-                currentFile = filename
+                self.controller.setActiveDocument(filename)
 
 
-        file = open(currentFile,'w')
+        file = open(self.controller.getActiveDocument(),'w')
         file.write(textInEditor)
 
     def saveAs(self):
-        global currentFile
         # prompt the user for saving the file
         result = QFileDialog.getSaveFileName()
         if result:
             filename = result[0]
             currentFile = filename
+            self.controller.setActiveDocument(currentFile)
             file = open(currentFile,'w')
             file.write(self.textArea.toPlainText())
 
 
     def open(self):
         """ read a file into the text editor"""
-        global currentFile
         result = QFileDialog.getOpenFileName()
 
         if result:
             currentFile = result[0]
+            self.controller.setActiveDocument(currentFile)
             parts = currentFile.split('/')
             dirparts = parts[:len(parts)-1]
             dir = '/'.join(dirparts)
@@ -194,8 +192,9 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
             fileContent = (file.read())
             self.textArea.setText(fileContent)
 
-    def loadText(self,text):
+    def loadText(self,text,doc):
         self.textArea.setText(text)
+        self.controller.setActiveDocument(doc)
 
     def update(self):
         pass

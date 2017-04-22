@@ -28,5 +28,5 @@ if __name__ == '__main__':
     screen_rect = app.desktop().screenGeometry()
     resolution = (screen_rect.width(),screen_rect.height())
     ui = gui.EditorGUI(resolution)
-    ui.loadText(fileContent)
+    ui.loadText(fileContent,filename)
     sys.exit(app.exec_())

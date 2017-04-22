@@ -25,3 +25,9 @@ class EditorController():
 
     def getWPM(self):
         return self.editorModel.wpm
+
+    def setActiveDocument(self,document):
+        self.editorModel.setDocument(document)
+
+    def getActiveDocument(self):
+        return self.editorModel.activeDocument
