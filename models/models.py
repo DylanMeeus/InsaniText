@@ -56,7 +56,8 @@ class EditorModel(editorobservers.EditorObservable):
         self.cpm_buffer.append(cps*60)
         self.cpm = sum(self.cpm_buffer) // len(self.cpm_buffer)
         self.wpm = self.cpm // 5
-        super().notify()
+        # No notify() needed because when the buffer is dumped, this is due to a dumpbuffer only happening when text changed (thus, setText -> notify)
+
 
     def countWords(self):
         words = re.split("[' '|'\\n']",self.textContent)

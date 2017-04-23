@@ -78,6 +78,9 @@ class InsaniTextEdit(QTextEdit, editorobservers.EditorObserver):
 
     def update(self):
         if self.toPlainText() != self.controller.getTextContent():
+            print(self.toPlainText()+'.')
+            print("vs")
+            print(self.controller.getTextContent()+'.')
             self.setText(self.controller.getTextContent())
 
 
@@ -191,7 +194,7 @@ class InsaniFileTree(QTreeView, editorobservers.EditorObserver):
         self.controller.subscribe(self)
         self.root = '.'
         self.setModelRoot(self.root)
-        self.doubleClicked.connect(self.activated_item)
+        self.doubleClicked.connect(self.double_clicked)
 
     def setModelRoot(self,root):
         self.root = root
@@ -212,10 +215,12 @@ class InsaniFileTree(QTreeView, editorobservers.EditorObserver):
 
         self.setModel(model)
 
-    def activated_item(self):
+    def double_clicked(self):
         selected_index = self.selectedIndexes()[0]
         item = selected_index.model().itemFromIndex(selected_index)
-        print(item.text())
+        while(item != None):
+            print(item.text())
+            item = item.parent()
 
     def update(self):
         """ update root if necessary """
