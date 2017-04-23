@@ -179,33 +179,38 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
 
 
 
+def build_filetree(parent,path):
+    """ attach all children to the parent """
+    if os.path.isdir(path):
+        children = os.listdir(path)
+        for child in children:
+            child_item = QStandardItem(child)
+            child_item.setEditable(False)
+            parent.appendRow(child_item)
+            build_filetree(child_item,path+'/'+child)
+
 
 class InsaniFileTree(QTreeView):
     def __init__(self):
         QTreeView.__init__(self)
         self.setModelRoot('.')
-        self.setHeaderHidden(True)
 
-    def setModelRoot(self,rootdir):
+    def setModelRoot(self,root):
         model = QStandardItemModel()
-
         rootItem = model.invisibleRootItem()
-        for dirName, dirs, files in os.walk(rootdir):
-            files = [f for f in files if not f[0] == '.']
-            dirs[:] = [d for d in dirs if not d[0] == '.'] # subdirs
-            dirItem = QStandardItem(dirName)
-            dirItem.setEditable(False)
-            for fname in files:
-                item = QStandardItem(fname)
-                item.setEditable(False)
-                dirItem.appendRow(item)
+        # get all current children
 
-            for dir in dirs:
-                item = QStandardItem(dir)
-                item.setEditable(False)
-                dirItem.appendRow(item)
+        # Set launched dir as header name
+        header_name = root.split('/')[-1:][0] if root != '.' else os.getcwd().split('/')[-1:][0]
+        model.setHorizontalHeaderItem(0,QStandardItem(header_name))
 
-            rootItem.appendRow(dirItem)
+        thisdir = os.listdir(root)
+        for item in thisdir:
+            standard_item = QStandardItem(item)
+            standard_item.setEditable(False)
+            build_filetree(standard_item,root+'/'+item)
+            rootItem.appendRow(standard_item)
+
         self.setModel(model)
 
 
