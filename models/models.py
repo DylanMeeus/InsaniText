@@ -27,15 +27,16 @@ class EditorModel(editorobservers.EditorObservable):
     def set_document_by_path(self,path):
         """ open a document in the currrent working directory, without changing the treeview """
 
-        file = self.working_dir + '/' + path
-        if os.path.isdir(file): # guard statement
+        filepath = self.working_dir + '/' + path
+        if os.path.isdir(filepath): # guard statement
             return
 
-        content = open(file,'r')
-        text = content.read()
-        self.setDocument(file)
+        file = open(filepath,'r')
+        text = file.read()
+        self.setDocument(filepath)
         self.setText(text)
         file.close()
+
 
     def setText(self,text):
         self.textContent = text
@@ -113,6 +114,7 @@ class EditorModel(editorobservers.EditorObservable):
             parts = currentFile.split('/')
             dirparts = parts[:len(parts)-1]
             dir = '/'.join(dirparts)
+            print("dir: " + dir)
             self.working_dir = dir
             file = open(currentFile,'r')
             self.textContent = file.read()
