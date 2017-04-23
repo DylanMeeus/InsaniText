@@ -1,5 +1,7 @@
 import os
 import time
+
+from config import config
 from controllers import controllers
 from models import editorobservers
 
@@ -7,7 +9,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-workingDir = None
+
+config = config.ConfigManager()
 
 class InsaniStatusbar(QStatusBar, editorobservers.EditorObserver):
     def __init__(self, controller):
@@ -106,8 +109,8 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
         self.setupMenubar()
 
         # set size
-        xSize = 600
-        ySize = 600
+        xSize = config.get_default('InitialWidth')
+        ySize = config.get_default('InitialHeight')
         self.resize(xSize,ySize)
         width = self.resolution[0]
         height = self.resolution[1]

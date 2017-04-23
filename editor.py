@@ -1,6 +1,7 @@
 import sys
 
 from gui import gui
+from config import config
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -24,3 +25,4 @@ if __name__ == '__main__':
     ui = gui.EditorGUI(resolution)
     ui.loadText(fileContent,filename)
     sys.exit(app.exec_())
+
