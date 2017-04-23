@@ -4,6 +4,7 @@ import time
 from config import config
 from controllers import controllers
 from models import editorobservers
+from gui import preferences
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -160,6 +161,9 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
         self.textArea.shortcut = QShortcut(QKeySequence("CTRL+SHIFT+S"),self)
         self.textArea.shortcut.activated.connect(self.saveAs)
 
+        self.textArea.shortcut = QShortcut(QKeySequence("CTRL+P"),self)
+        self.textArea.shortcut.activated.connect(self.open_preferences)
+
 
     def save(self):
         self.controller.saveActiveDocument()
@@ -171,6 +175,10 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
     def open(self):
         """ read a file into the text editor"""
         self.controller.openFile()
+
+    def open_preferences(self):
+        preferences.EditorPreferences()
+        print("done")
 
     def loadText(self,text,doc):
         self.textArea.setText(text)
