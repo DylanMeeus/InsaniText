@@ -32,6 +32,9 @@ class EditorController():
     def getWPM(self):
         return self.editorModel.wpm
 
+    def set_document_by_path(self,path):
+        self.editorModel.set_document_by_path(path)
+
     def setActiveDocument(self,document):
         self.editorModel.setDocument(document)
 
@@ -43,6 +46,9 @@ class EditorController():
 
     def saveActiveDocumentAs(self):
         self.editorModel.saveAs()
+
+    def set_working_dir(self,dir):
+        self.editorModel.set_working_dir(dir)
 
 
     def openFile(self):

@@ -1,17 +1,11 @@
 import sys
-import re
 
 from gui import gui
-from models import editorobservers
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-
-
-
-## Observable and observer classes (there are no interfaces in python apperantly)
 
 
 def parse_cli_files(args):

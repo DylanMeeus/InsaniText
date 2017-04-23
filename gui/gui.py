@@ -135,6 +135,8 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
         dock.setWidget(self.filetree)
         self.addDockWidget(Qt.LeftDockWidgetArea, dock)
 
+        self.controller.set_working_dir('.')
+
     # show the GUI
         self.show()
 
@@ -218,9 +220,13 @@ class InsaniFileTree(QTreeView, editorobservers.EditorObserver):
     def double_clicked(self):
         selected_index = self.selectedIndexes()[0]
         item = selected_index.model().itemFromIndex(selected_index)
+        path = ""
         while(item != None):
-            print(item.text())
+            path = (item.text()) + '/' + path
             item = item.parent()
+
+        path = (path[:-1]) # remove trailing /
+        self.controller.set_document_by_path(path)
 
     def update(self):
         """ update root if necessary """

@@ -1,5 +1,5 @@
 import re
-import time
+import os
 from models import editorobservers
 
 
@@ -23,6 +23,19 @@ class EditorModel(editorobservers.EditorObservable):
         """ Set a new document as active document """
         self.activeDocument = document
         self.resetState()
+
+    def set_document_by_path(self,path):
+        """ open a document in the currrent working directory, without changing the treeview """
+
+        file = self.working_dir + '/' + path
+        if os.path.isdir(file): # guard statement
+            return
+
+        content = open(file,'r')
+        text = content.read()
+        self.setDocument(file)
+        self.setText(text)
+        file.close()
 
     def setText(self,text):
         self.textContent = text
@@ -87,6 +100,10 @@ class EditorModel(editorobservers.EditorObservable):
     def saveAs(self):
         self.saveContentToFile(True)
 
+    def set_working_dir(self,dir):
+        self.working_dir = dir
+        super().notify()
+
     def open_file(self):
         result = QFileDialog.getOpenFileName()
 
@@ -99,6 +116,7 @@ class EditorModel(editorobservers.EditorObservable):
             self.working_dir = dir
             file = open(currentFile,'r')
             self.textContent = file.read()
+            file.close()
 
         super().notify()
 
