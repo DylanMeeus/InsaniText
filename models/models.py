@@ -17,6 +17,7 @@ class EditorModel(editorobservers.EditorObservable):
         self.cpm = 0
         self.cpm_buffer = []
         self.activeDocument = None
+        self.working_dir = None
 
     def setDocument(self,document):
         """ Set a new document as active document """
@@ -84,4 +85,19 @@ class EditorModel(editorobservers.EditorObservable):
 
     def saveAs(self):
         self.saveContentToFile(True)
+
+    def open_file(self):
+        result = QFileDialog.getOpenFileName()
+
+        if result:
+            currentFile = result[0]
+            self.activeDocument = currentFile
+            parts = currentFile.split('/')
+            dirparts = parts[:len(parts)-1]
+            dir = '/'.join(dirparts)
+            self.working_dir = dir
+            file = open(currentFile,'r')
+            self.textContent = file.read()
+
+        super().notify()
 

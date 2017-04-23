@@ -8,6 +8,12 @@ class EditorController():
     def setTextContent(self,textContent):
         self.editorModel.setText(textContent)
 
+    def getTextContent(self):
+        return self.editorModel.textContent
+
+    def getRoot(self):
+        return self.editorModel.working_dir
+
     def subscribe(self,object):
         self.editorModel.addObserver(object)
 
@@ -37,3 +43,7 @@ class EditorController():
 
     def saveActiveDocumentAs(self):
         self.editorModel.saveAs()
+
+
+    def openFile(self):
+        self.editorModel.open_file()

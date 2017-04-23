@@ -30,7 +30,7 @@ class InsaniStatusbar(QStatusBar, editorobservers.EditorObserver):
         self.wpmLabel.setText("wpm: " + str(self.controller.getWPM()))
 
 
-class InsaniTextEdit(QTextEdit):
+class InsaniTextEdit(QTextEdit, editorobservers.EditorObserver):
     """  Custom class that is essentially an improved QTextEdit """
 
     BUFFER_THRESHOLD = 20
@@ -38,6 +38,7 @@ class InsaniTextEdit(QTextEdit):
         super().__init__()
         self.lastpress = None
         self.controller = controller
+        self.controller.subscribe(self)
         self.charbuffer = [] # Buffer for the characters that are in the current "count-cycle" for the WPM average.
         # some variables for timing how long we have been typing
         self.startbuffer_time = 0
@@ -74,6 +75,10 @@ class InsaniTextEdit(QTextEdit):
             self.startbuffer_time = now
             self.charbuffer.append(e.text())
         self.controller.setTextContent(self.toPlainText())
+
+    def update(self):
+        if self.toPlainText() != self.controller.getTextContent():
+            self.setText(self.controller.getTextContent())
 
 
 class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwindow
@@ -122,7 +127,7 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
 
 
         # add sidebar
-        self.filetree = InsaniFileTree()
+        self.filetree = InsaniFileTree(self.controller)
         dock = QDockWidget()
         dock.setWidget(self.filetree)
         self.addDockWidget(Qt.LeftDockWidgetArea, dock)
@@ -157,18 +162,7 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
 
     def open(self):
         """ read a file into the text editor"""
-        result = QFileDialog.getOpenFileName()
-
-        if result:
-            currentFile = result[0]
-            self.controller.setActiveDocument(currentFile)
-            parts = currentFile.split('/')
-            dirparts = parts[:len(parts)-1]
-            dir = '/'.join(dirparts)
-            self.filetree.setModelRoot(dir)
-            file = open(currentFile,'r')
-            fileContent = (file.read())
-            self.textArea.setText(fileContent)
+        self.controller.openFile()
 
     def loadText(self,text,doc):
         self.textArea.setText(text)
@@ -190,12 +184,17 @@ def build_filetree(parent,path):
             build_filetree(child_item,path+'/'+child)
 
 
-class InsaniFileTree(QTreeView):
-    def __init__(self):
+class InsaniFileTree(QTreeView, editorobservers.EditorObserver):
+    def __init__(self, controller):
         QTreeView.__init__(self)
-        self.setModelRoot('.')
+        self.controller = controller
+        self.controller.subscribe(self)
+        self.root = '.'
+        self.setModelRoot(self.root)
+        self.doubleClicked.connect(self.activated_item)
 
     def setModelRoot(self,root):
+        self.root = root
         model = QStandardItemModel()
         rootItem = model.invisibleRootItem()
         # get all current children
@@ -212,6 +211,18 @@ class InsaniFileTree(QTreeView):
             rootItem.appendRow(standard_item)
 
         self.setModel(model)
+
+    def activated_item(self):
+        selected_index = self.selectedIndexes()[0]
+        item = selected_index.model().itemFromIndex(selected_index)
+        print(item.text())
+
+    def update(self):
+        """ update root if necessary """
+        if (self.controller.getRoot() != None):
+            if self.root != self.controller.getRoot():
+                self.root = self.controller.getRoot()
+                self.setModelRoot(self.root)
 
 
 
