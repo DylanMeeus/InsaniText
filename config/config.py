@@ -17,5 +17,9 @@ class ConfigManager:
     def get_default(self,key):
         return self.parser.getint('DEFAULT',key)
 
+    def set_default(self,key):
+        if self.get_default(key) == None: # The key does not exist!
+            return
+
 
 
