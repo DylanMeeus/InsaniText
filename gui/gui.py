@@ -1,5 +1,6 @@
 import os
 import time
+import re
 
 from config import config
 from controllers import controllers
@@ -12,6 +13,16 @@ from PyQt5.QtWidgets import *
 
 
 config = config.ConfigManager()
+
+
+# PyQt QkeyEvent keycodes
+KEY_BACKSPACE = 16777219
+KEY_LEFT = 16777234
+KEY_RIGHT = 16777236
+KEY_UP = 16777235
+KEY_DOWN = 16777237
+KEY_SHIFT = 16777248
+
 
 class InsaniStatusbar(QStatusBar, editorobservers.EditorObserver):
     def __init__(self, controller):
@@ -48,6 +59,8 @@ class InsaniTextEdit(QTextEdit, editorobservers.EditorObserver):
         self.startbuffer_time = 0
         # Set solarized-light background
         self.setStyleSheet("background-color:#fdf6e3")
+        self.filtered_keys= [KEY_BACKSPACE,KEY_DOWN,KEY_UP,KEY_LEFT,KEY_RIGHT]
+
 
     def keyPressEvent(self,e):
         # convert tabs to space!
@@ -62,22 +75,29 @@ class InsaniTextEdit(QTextEdit, editorobservers.EditorObserver):
         now = int(round(time.time() * 1000))
         delta = now - self.lastpress if self.lastpress != None else 0
         self.lastpress = now
-        if(delta < 2000):
-            self.charbuffer.append(e.text())
-            if len(self.charbuffer) >= self.BUFFER_THRESHOLD:
-                # clean the buffer and calculate the wpm. Could do this based on timestamps as well though
-                self.controller.dumpcharbuffer(self.charbuffer,self.startbuffer_time,self.lastpress)
-                self.charbuffer = []
-                self.startbuffer_time = now # reset buffer time
 
-            # if we reached this and the timer is still 0, start the timer
-            if(self.startbuffer_time == 0):
+        if e.key() not in self.filtered_keys:
+            if(delta < 2000):
+                self.charbuffer.append(e.text())
+                if len(self.charbuffer) >= self.BUFFER_THRESHOLD:
+                    # clean the buffer and calculate the wpm. Could do this based on timestamps as well though
+                    self.controller.dumpcharbuffer(self.charbuffer,self.startbuffer_time,self.lastpress)
+                    self.charbuffer = []
+                    self.startbuffer_time = now # reset buffer time
+
+                # if we reached this and the timer is still 0, start the timer
+                if(self.startbuffer_time == 0):
+                    self.startbuffer_time = now
+            else:
+                # start a new buffer, and dump the current one
+                self.charbuffer = []
                 self.startbuffer_time = now
+                self.charbuffer.append(e.text())
         else:
-            # start a new buffer, and dump the current one
+            # filtered key
             self.charbuffer = []
             self.startbuffer_time = now
-            self.charbuffer.append(e.text())
+
         self.controller.setTextContent(self.toPlainText())
 
     def update(self):
