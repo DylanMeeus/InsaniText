@@ -1,0 +1,31 @@
+""" gui for the command runner """
+
+from commands import commands
+
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+
+
+class CommandPopup(QInputDialog):
+    """ popup for a single-line command to be entered"""
+    def __init__(self):
+        super().__init__()
+        self.setupGUI()
+        self.command_runner = commands.CommandRunner()
+
+    def setupGUI(self):
+        self.setLabelText("Command:")
+        self.show()
+
+    def done(self, result):
+        super().done(result)
+        if result == 1:
+            print(self.textValue())
+            self.command_runner.run(self.textValue())
+
+
+class CommandWindow(QMainWindow):
+    def __init__(self):
+        """ a command window that display input + output like a terminal window"""
+        super().__init__()
