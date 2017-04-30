@@ -103,9 +103,6 @@ class InsaniTextEdit(QTextEdit, editorobservers.EditorObserver):
 
     def update(self):
         if self.toPlainText() != self.controller.get_textcontent():
-            print(self.toPlainText()+'.')
-            print("vs")
-            print(self.controller.get_textcontent() + '.')
             self.setText(self.controller.get_textcontent())
 
 

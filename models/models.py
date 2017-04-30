@@ -18,11 +18,19 @@ class EditorModel(editorobservers.EditorObservable):
         self.cpm_buffer = []
         self.activeDocument = None
         self.working_dir = None
+        self.used_documents = {}
 
     def setDocument(self,document):
         """ Set a new document as active document """
         self.activeDocument = document
         self.resetState()
+
+        print(self.used_documents.keys())
+        if document in self.used_documents.keys():
+            return self.used_documents[document]
+        else:
+            self.used_documents[document] = ''
+            return ''
 
     def set_document_by_path(self,path):
         """ open a document in the currrent working directory, without changing the treeview """
@@ -33,13 +41,17 @@ class EditorModel(editorobservers.EditorObservable):
 
         file = open(filepath,'r')
         text = file.read()
-        self.setDocument(filepath)
+        saved_text = self.setDocument(filepath)
+        if saved_text != '':
+            text = saved_text
+
         self.setText(text)
         file.close()
 
 
     def setText(self,text):
         self.textContent = text
+        self.used_documents[self.activeDocument] = text
         self.updateState()
         super().notify()
 

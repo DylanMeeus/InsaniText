@@ -24,7 +24,7 @@ class EditorController():
         return self.editorModel.characterCount
 
     def dump_charbuffer(self, buffer, buffer_starttime, buffer_endtime):
-        self.editorModel.dumpbuffer(buffer,buffer_starttime,buffer_endtime)
+        self.editorModel.dumpbuffer(buffer, buffer_starttime, buffer_endtime)
 
     def get_CPM(self):
         return self.editorModel.cpm
