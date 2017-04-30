@@ -40,10 +40,10 @@ class InsaniStatusbar(QStatusBar, editorobservers.EditorObserver):
         self.addWidget(self.wpmLabel)
 
     def update(self):
-        self.wordLabel.setText("words: " + str(self.controller.getWordCount()))
-        self.charcountLabel.setText("characters: " + str(self.controller.getCharCount()))
-        self.cpmLabel.setText("cpm: " + str(self.controller.getCPM()))
-        self.wpmLabel.setText("wpm: " + str(self.controller.getWPM()))
+        self.wordLabel.setText("words: " + str(self.controller.get_wordcount()))
+        self.charcountLabel.setText("characters: " + str(self.controller.get_charcount()))
+        self.cpmLabel.setText("cpm: " + str(self.controller.get_CPM()))
+        self.wpmLabel.setText("wpm: " + str(self.controller.get_WPM()))
 
 
 class InsaniTextEdit(QTextEdit, editorobservers.EditorObserver):
@@ -82,7 +82,7 @@ class InsaniTextEdit(QTextEdit, editorobservers.EditorObserver):
                 self.charbuffer.append(e.text())
                 if len(self.charbuffer) >= self.BUFFER_THRESHOLD:
                     # clean the buffer and calculate the wpm. Could do this based on timestamps as well though
-                    self.controller.dumpcharbuffer(self.charbuffer,self.startbuffer_time,self.lastpress)
+                    self.controller.dump_charbuffer(self.charbuffer, self.startbuffer_time, self.lastpress)
                     self.charbuffer = []
                     self.startbuffer_time = now # reset buffer time
 
@@ -99,14 +99,14 @@ class InsaniTextEdit(QTextEdit, editorobservers.EditorObserver):
             self.charbuffer = []
             self.startbuffer_time = now
 
-        self.controller.setTextContent(self.toPlainText())
+        self.controller.set_textcontent(self.toPlainText())
 
     def update(self):
-        if self.toPlainText() != self.controller.getTextContent():
+        if self.toPlainText() != self.controller.get_textcontent():
             print(self.toPlainText()+'.')
             print("vs")
-            print(self.controller.getTextContent()+'.')
-            self.setText(self.controller.getTextContent())
+            print(self.controller.get_textcontent() + '.')
+            self.setText(self.controller.get_textcontent())
 
 
 class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwindow
@@ -189,14 +189,14 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
         self.textArea.shortcut.activated.connect(self.command_popup)
 
     def save(self):
-        self.controller.saveActiveDocument()
+        self.controller.save_active_document()
 
     def saveAs(self):
-        self.controller.saveActiveDocumentAs()
+        self.controller.save_active_document_as()
 
     def open(self):
         """ read a file into the text editor"""
-        self.controller.openFile()
+        self.controller.open_file()
 
     def open_preferences(self):
         preferences.EditorPreferences()
@@ -206,7 +206,7 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
 
     def loadText(self,text,doc):
         self.textArea.setText(text)
-        self.controller.setActiveDocument(doc)
+        self.controller.set_active_document(doc)
 
     def update(self):
         pass
@@ -265,9 +265,9 @@ class InsaniFileTree(QTreeView, editorobservers.EditorObserver):
 
     def update(self):
         """ update root if necessary """
-        if (self.controller.getRoot() != None):
-            if self.root != self.controller.getRoot():
-                self.root = self.controller.getRoot()
+        if (self.controller.get_root() != None):
+            if self.root != self.controller.get_root():
+                self.root = self.controller.get_root()
                 self.setModelRoot(self.root)
 
 

@@ -11,8 +11,8 @@ class CommandRunner:
         if command == "exit":
             sys.exit()
         elif command == "save":
-            self.controller.saveActiveDocument()
+            self.controller.save_active_document()
         elif command == "save as":
-            self.controller.saveActiveDocumentAs()
+            self.controller.save_active_document_as()
         elif command == "open":
-            self.controller.openFile()
+            self.controller.open_file()
