@@ -9,8 +9,8 @@ from PyQt5.QtWidgets import *
 
 class CommandPopup(QInputDialog):
     """ popup for a single-line command to be entered"""
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent = None):
+        super().__init__(parent = parent)
         self.setupGUI()
         self.command_runner = commands.CommandRunner()
 
@@ -20,6 +20,7 @@ class CommandPopup(QInputDialog):
 
     def done(self, result):
         super().done(result)
+        print("done")
         if result == 1:
             print(self.textValue())
             self.command_runner.run(self.textValue())

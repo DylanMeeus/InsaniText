@@ -3,6 +3,7 @@ import sys
 from gui import gui
 from config import config
 
+
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -24,5 +25,7 @@ if __name__ == '__main__':
     resolution = (screen_rect.width(),screen_rect.height())
     ui = gui.EditorGUI(resolution)
     ui.loadText(fileContent,filename)
+
+
     sys.exit(app.exec_())
 

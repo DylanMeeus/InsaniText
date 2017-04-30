@@ -6,6 +6,7 @@ from config import config
 from controllers import controllers
 from models import editorobservers
 from gui import preferences
+from commands import gui as commandgui
 
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -184,6 +185,8 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
         self.textArea.shortcut = QShortcut(QKeySequence("CTRL+P"),self)
         self.textArea.shortcut.activated.connect(self.open_preferences)
 
+        self.textArea.shortcut = QShortcut(QKeySequence("CTRL+E"),self)
+        self.textArea.shortcut.activated.connect(self.command_popup)
 
     def save(self):
         self.controller.saveActiveDocument()
@@ -191,14 +194,15 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
     def saveAs(self):
         self.controller.saveActiveDocumentAs()
 
-
     def open(self):
         """ read a file into the text editor"""
         self.controller.openFile()
 
     def open_preferences(self):
         preferences.EditorPreferences()
-        print("done")
+
+    def command_popup(self):
+        x = commandgui.CommandPopup(self)
 
     def loadText(self,text,doc):
         self.textArea.setText(text)
