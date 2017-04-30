@@ -1,6 +1,7 @@
 """ gui for the command runner """
 
 from commands import commands
+from controllers import controllers
 
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -9,10 +10,10 @@ from PyQt5.QtWidgets import *
 
 class CommandPopup(QInputDialog):
     """ popup for a single-line command to be entered"""
-    def __init__(self, parent = None):
+    def __init__(self, controller, parent = None, ):
         super().__init__(parent = parent)
         self.setupGUI()
-        self.command_runner = commands.CommandRunner()
+        self.command_runner = commands.CommandRunner(controller)
 
     def setupGUI(self):
         self.setLabelText("Command:")
