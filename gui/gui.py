@@ -128,8 +128,8 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
         self.setupMenubar()
 
         # set size
-        xSize = config.get_default('InitialWidth')
-        ySize = config.get_default('InitialHeight')
+        xSize = int(config.get_value('GUI','InitialWidth'))
+        ySize = int(config.get_value('GUI','InitialHeight'))
         self.resize(xSize,ySize)
         width = self.resolution[0]
         height = self.resolution[1]
@@ -196,7 +196,7 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
         self.controller.open_file()
 
     def open_preferences(self):
-        preferences.EditorPreferences()
+        preferences.EditorPreferences(self)
 
     def command_popup(self):
         x = commandgui.CommandPopup(self.controller, self)

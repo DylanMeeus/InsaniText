@@ -33,7 +33,7 @@ class EditorModel(editorobservers.EditorObservable):
             return ''
 
     def set_document_by_path(self,path):
-        """ open a document in the currrent working directory, without changing the treeview """
+        """ open a document in the current working directory, without changing the treeview """
 
         filepath = self.working_dir + '/' + path
         if os.path.isdir(filepath): # guard statement

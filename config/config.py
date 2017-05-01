@@ -12,10 +12,16 @@ class ConfigManager:
         self.config_file = os.path.abspath('config/settings.ini')
         self.parser = configparser.ConfigParser()
         self.parser.read(self.config_file)
+        print("Loaded config")
 
 
     def get_default(self,key):
-        return self.parser.getint('DEFAULT',key)
+        return self.parser.getint('DEFAULT', key)
+
+
+    def get_value(self, section, key):
+        return self.parser.get(section,key)
+
 
     def set_default(self,key):
         if self.get_default(key) == None: # The key does not exist!
