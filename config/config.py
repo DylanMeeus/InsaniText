@@ -9,7 +9,8 @@ class ConfigManager:
 
 
     def __init__(self):
-        self.config_file = os.path.abspath('config/settings.ini')
+        this_dir = os.path.dirname(__file__)
+        self.config_file = os.path.join(this_dir, 'settings.ini')
         self.parser = configparser.ConfigParser()
         self.parser.read(self.config_file)
         print("Loaded config")
