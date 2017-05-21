@@ -1,4 +1,4 @@
-import sys
+import sys,os
 
 from gui import gui, preferences
 
@@ -14,6 +14,7 @@ def parse_cli_files(args):
 
 if __name__ == '__main__':
     print("started editor")
+
     filename = parse_cli_files(sys.argv)
     fileContent = open(filename,'r').read() if filename != None else ""
 
@@ -23,10 +24,5 @@ if __name__ == '__main__':
     resolution = (screen_rect.width(),screen_rect.height())
     ui = gui.EditorGUI(resolution)
     ui.loadText(fileContent,filename)
-
-
-    p = preferences.EditorPreferences()
-
-
     sys.exit(app.exec_())
 
