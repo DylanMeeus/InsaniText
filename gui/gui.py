@@ -199,7 +199,7 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
         preferences.EditorPreferences(self)
 
     def command_popup(self):
-        x = commandgui.CommandPopup(self.controller, self)
+        commandgui.CommandPopup(self.controller, self)
 
     def loadText(self,text,doc):
         self.textArea.setText(text)
