@@ -1,5 +1,5 @@
 """ class to run CLI-like commands inside the application """
-import sys
+import sys, os
 
 class CommandRunner:
     def __init__(self, controller):
@@ -19,5 +19,13 @@ class CommandRunner:
             sys.exit()
         elif command == "open":
             self.controller.open_file()
+        elif command.startswith("exec"):
+            self.executeCLI(command)
         else:
             print("Command not found!")
+
+
+    """ Execute a command on the CLI"""
+    def executeCLI(self, command):
+        cli_command = " ".join(command.split(" ")[1:])
+        os.system(cli_command)
