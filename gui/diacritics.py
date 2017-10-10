@@ -53,3 +53,4 @@ class DiacriticPanel(QWidget):
     def handle_click(self, char):
         event = QKeyEvent(QEvent.KeyPress, Qt.Key_Space, Qt.NoModifier,char) # space is just a mock!
         self.texteditor.keyPressEvent(event)
+        self.texteditor.setFocus()
