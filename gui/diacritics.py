@@ -7,8 +7,9 @@ from PyQt5.QtWidgets import *
 Diacritic panel
 """
 class DiacriticPanel(QWidget):
-    def __init__(self, parent = None):
-        super().__init__(parent)
+    def __init__(self, texteditor):
+        super().__init__()
+        self.texteditor = texteditor
         self.setupGUI()
 
 
@@ -50,4 +51,5 @@ class DiacriticPanel(QWidget):
         return lambda: self.handle_click(char)
 
     def handle_click(self, char):
-        print(char)
+        event = QKeyEvent(QEvent.KeyPress, Qt.Key_Space, Qt.NoModifier,char) # space is just a mock!
+        self.texteditor.keyPressEvent(event)

@@ -169,7 +169,7 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
 
 
         # add the diacritics top panel
-        diapanel = diacritics.DiacriticPanel()
+        diapanel = diacritics.DiacriticPanel(self.textArea)
         diadock = QDockWidget()
         diadock.setWidget(diapanel)
         self.addDockWidget(Qt.TopDockWidgetArea, diadock)
