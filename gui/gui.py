@@ -5,7 +5,7 @@ import re
 from config import config
 from controllers import controllers
 from models import editorobservers
-from gui import preferences
+from gui import preferences, diacritics
 from commands import gui as commandgui
 
 from PyQt5.QtCore import *
@@ -25,6 +25,10 @@ KEY_DOWN = 16777237
 KEY_SHIFT = 16777248
 
 
+
+"""
+This is the status bar to show the Words Per Minute / Characters Per Minute that are typed.
+"""
 class InsaniStatusbar(QStatusBar, editorobservers.EditorObserver):
     def __init__(self, controller):
         super().__init__()
@@ -46,6 +50,9 @@ class InsaniStatusbar(QStatusBar, editorobservers.EditorObserver):
         self.wpmLabel.setText("wpm: " + str(self.controller.get_WPM()))
 
 
+"""
+The main textarea in which the user will input text.
+"""
 class InsaniTextEdit(QTextEdit, editorobservers.EditorObserver):
     """  Custom class that is essentially an improved QTextEdit """
 
@@ -106,6 +113,9 @@ class InsaniTextEdit(QTextEdit, editorobservers.EditorObserver):
             self.setText(self.controller.get_textcontent())
 
 
+"""
+Main editor GUI.
+"""
 class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwindow
     """ GUI class for the editor """
     textArea = None
@@ -151,15 +161,23 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
         self.setStatusBar(InsaniStatusbar(self.controller))
 
 
-        # add sidebar
+        # add filetree sidebar
         self.filetree = InsaniFileTree(self.controller)
-        dock = QDockWidget()
-        dock.setWidget(self.filetree)
-        self.addDockWidget(Qt.LeftDockWidgetArea, dock)
+        treedock = QDockWidget()
+        treedock.setWidget(self.filetree)
+        self.addDockWidget(Qt.LeftDockWidgetArea, treedock)
 
+
+        # add the diacritics top panel
+        diapanel = diacritics.DiacriticPanel()
+        diadock = QDockWidget()
+        diadock.setWidget(diapanel)
+        self.addDockWidget(Qt.TopDockWidgetArea, diadock)
+
+        # set working dir
         self.controller.set_working_dir('.')
 
-    # show the GUI
+        # show the GUI
         self.show()
 
     def setupMenubar(self):
@@ -169,7 +187,7 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
 
 
     def setupShortcuts(self):
-        """ method to define shortcuts on the editor"""
+        """ method to define shortcutQSs on the editor"""
         self.textArea.shortcut = QShortcut(QKeySequence("CTRL+S"),self)
         self.textArea.shortcut.activated.connect(self.save)
 
@@ -181,6 +199,10 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
 
         self.textArea.shortcut = QShortcut(QKeySequence("CTRL+P"),self)
         self.textArea.shortcut.activated.connect(self.open_preferences)
+
+        # Open the diacritic panel
+        self.textArea.shortcut = QShortcut(QKeySequence("CTRL+D"),self)
+        self.textArea.shortcut.activated.connect(self.open_diacritics)
 
         self.textArea.shortcut = QShortcut(QKeySequence("CTRL+E"),self)
         self.textArea.shortcut.activated.connect(self.command_popup)
@@ -197,6 +219,9 @@ class EditorGUI(QMainWindow, editorobservers.EditorObserver):  # extends mainwin
 
     def open_preferences(self):
         preferences.EditorPreferences(self)
+
+    def open_diacritics(self):
+        diacritics.DiacriticPanel(self)
 
     def command_popup(self):
         commandgui.CommandPopup(self.controller, self)
