@@ -71,6 +71,11 @@ class EditorModel(editorobservers.EditorObservable):
         self.cpm_buffer = []
         super().notify()
 
+    def reset_metrics(self):
+        self.cpm_buffer = []
+        self.cpm = 0
+        self.wpm = 0
+
     def dumpbuffer(self,charbuffer,buffer_starttime, buffer_endtime):
         """ analyze a buffer of characters to update the wpm and cpm values """
 

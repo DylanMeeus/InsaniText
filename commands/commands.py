@@ -10,6 +10,8 @@ class CommandRunner:
         """ finds the course of action to take for the command"""
         if command == "exit":
             sys.exit()
+        elif command == "reset metrics" or command == "resetmetrics": #todo: regex this so it accepts any combination
+            self.controller.reset_metrics()
         elif command == "save":
             self.controller.save_active_document()
         elif command == "save as":

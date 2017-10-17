@@ -47,9 +47,11 @@ class EditorController():
     def save_active_document_as(self):
         self.editorModel.saveAs()
 
+    def reset_metrics(self):
+        self.editorModel.reset_metrics()
+
     def set_working_dir(self,dir):
         self.editorModel.set_working_dir(dir)
-
 
     def open_file(self):
         self.editorModel.open_file()
